@@ -1,0 +1,16 @@
+@model RatingsViewModel
+<h2 class="mb-2">Food hygiene ratings by local authority</h2>
+<p class="text-muted">Select an authority to view percentages for its hygiene rating scheme.</p>
+<form method="get" asp-controller="Ratings" asp-action="Index" class="row gy-3 align-items-end mb-4">
+<div class="col-md-8"><label for="authorityId" class="form-label fw-semibold">Local authority</label>
+<select id="authorityId" name="authorityId" class="form-select" required>
+<option value="">Select a local authority...</option>
+@foreach(var authority in Model.Authorities){<option value="@authority.Id" selected="@(Model.AuthorityId==authority.Id)">@authority.Name</option>}
+</select></div><div class="col-md-4"><button class="btn btn-primary w-100" type="submit">Show ratings</button></div></form>
+@if(Model.Error is not null){<div class="alert alert-danger" role="alert">@Model.Error</div>}
+@if(Model.Scheme is not null){<section class="card shadow-sm"><div class="card-body">
+<h3 class="h5">@Model.AuthorityName</h3><p class="text-muted">Scheme: @Model.Scheme · Rated establishments: @Model.RatedCount</p>
+<table class="table table-striped"><thead><tr><th>Rating</th><th class="text-end">Count</th><th class="text-end">Percentage</th></tr></thead><tbody>
+@foreach(var rating in Model.Results){<tr><th scope="row">@rating.Rating</th><td class="text-end">@rating.Count</td><td class="text-end">@rating.Percentage.ToString("0.##")%</td></tr>}
+</tbody></table><p class="small text-muted">@Model.ExcludedCount of @Model.TotalFetched records excluded from the fixed rating categories. Percentages use @Model.RatedCount included records.</p>
+</div></section>}
